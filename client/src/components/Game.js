@@ -8,11 +8,10 @@ function Game(props) {
     const socket = props.socket;
 
     socket.on("receive-info", (user) => {
-        if (!player2) {
-            setPlayer2(user);
-        } else {
-            socket.emit("send", props.user, props.room)  
+        if (player2) {
+            socket.emit("send", props.user, props.room);
         }
+        setPlayer2(user);   
     })
 
     socket.on("receive-table", (value) => {
