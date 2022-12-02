@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import '../styles/Game.css';
+import {io} from "socket.io-client";
 
 function Game(props) {
     const [player2, setPlayer2] = useState(null);
@@ -8,10 +9,12 @@ function Game(props) {
     const socket = props.socket;
 
     socket.on("receive-info", (user) => {
-        if (player2) {
-            socket.emit("send", props.user, props.room);
-        }
-        setPlayer2(user);   
+        setPlayer2(user);  
+        socket.emit("send", props.user, props.room);
+    })
+
+    socket.on("receive-first", (user) => {
+        setPlayer2(user);  
     })
 
     socket.on("receive-table", (value) => {
