@@ -1,4 +1,13 @@
-const io = require("socket.io")(5000, {
+const express = require("express")
+const app = express()
+const server = require('http').createServer(app)
+
+server.listen(5000,  () => {
+    console.log(5000)
+})
+
+
+const io = require("socket.io")(server, {
     cors: {
         origin: '*'
     }
@@ -19,3 +28,4 @@ io.on("connection", socket => {
         cb();
     })
 });
+

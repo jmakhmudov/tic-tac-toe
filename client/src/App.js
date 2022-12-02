@@ -3,7 +3,7 @@ import './App.css';
 import {io} from "socket.io-client";
 
 function App() {
-  const socket = io("http://localhost:5000", {
+  const socket = io("https://tic-tac-toe-production-053e.up.railway.app:5000", {
     transports: ["websocket"]
   });
 
