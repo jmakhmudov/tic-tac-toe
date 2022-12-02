@@ -3,19 +3,19 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 import Game from "./Game";
 
-function Login() {
+function Login(props) {
     const cookies = new Cookies();
     const [user, setUser] = useState(null)
     const [room, setRoom] = useState(null)
     const [auth, setAuth] = useState(false)
+    const socket = props.socket
+
+    socket.on("connect", () => {
+        console.log(socket.id)
+    })
 
     const LogIn = () => {
-        axios.post("http://localhost:5000/login", {user, room}).then (res => {
-            const {user, room, userId} = res.data;
-
-            cookies.set("user", user);
-            cookies.set("room", room);
-            cookies.set("userId", userId);
+        socket.emit("join-room", user, room, () => {
             setAuth(true);
         });
     }
@@ -23,7 +23,8 @@ function Login() {
 
     return (
         <div>
-            {auth ? <Game/> :
+            {auth ? <Game socket={props.socket}
+            user={user} room={room}/> :
             <div className="login-box">
                 <label>Start game</label>
                 <input placeholder="Name" type="text" onChange={(e) => {
