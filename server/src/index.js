@@ -24,7 +24,7 @@ io.on("connection", socket => {
         cb();
     })
     socket.on("table", (val, room, cb) => {
-        socket.to(room).emit("receive-table", val;
+        socket.to(room).emit("receive-table", val);
         cb();
     })
 });
