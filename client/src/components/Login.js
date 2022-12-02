@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import Game from "./Game";
+import '../styles/Login.css';
 
 function Login(props) {
     const [user, setUser] = useState(null)
@@ -23,7 +24,7 @@ function Login(props) {
             {auth ? <Game socket={props.socket}
             user={user} room={room}/> :
             <div className="login-box">
-                <label>Start game</label>
+                <p>Tic-Tac-Toe</p>
                 <input placeholder="Name" type="text" onChange={(e) => {
                     setUser(e.target.value)
                 }}/>

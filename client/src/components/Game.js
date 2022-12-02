@@ -7,6 +7,31 @@ function Game(props) {
     const [val, setVal] = useState(["","","","","","","","",""]);
     const [turn, setTurn] = useState('X');
     const socket = props.socket;
+    const combs = [
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		[0, 4, 8],
+		[2, 4, 6],
+	];
+
+    const victory = (val) => {
+        for (let comb of combs) {
+            if (
+                val[comb[0]] == val[comb[1]] 
+                    &&
+                val[comb[1]] == val[comb[2]] 
+                    &&
+                val[comb[0]] != ''
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     socket.on("receive-info", (user) => {
         setPlayer2(user);  
@@ -21,7 +46,6 @@ function Game(props) {
                 document.getElementById(i).disabled = true;
             }
         })
-        
     })
 
     socket.on("receive-table", (value) => {
@@ -34,6 +58,9 @@ function Game(props) {
             }
         }
         renderTable(value) 
+        if (victory(value)) {
+            window.alert("You lose:(");
+        };
     })
 
     const renderTable = (val) => {
@@ -54,18 +81,24 @@ function Game(props) {
         })
         document.getElementById(id).innerText = turn;
         setVal(a);
+        
         socket.emit("table", a, props.room, () => {
             for (let i=0;i<9;i++) {
                 document.getElementById(i).disabled = true;
             }
         })
-        setTurn(turn==='X'?'O':'X');
+        if (victory(a)) {
+            window.alert("You won!");
+        };
     }
 
 
     return (
         <div className="game-box">
+            <p>Room ID: {props.room}</p>
             {player2 ? 
+            <div>
+                <p className="players"><span>{turn}</span> {props.user} VS {player2} <span>{turn==='X'?'O':'X'}</span></p>
             <div className="table-box">
                 <button id="0"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
                 <button id="1"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
@@ -77,7 +110,8 @@ function Game(props) {
                 <button id="7"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
                 <button id="8"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
 
-            </div> : 
+            </div>
+            </div> :
             <h1>Waiting for the opponent</h1>
             }
         </div>
