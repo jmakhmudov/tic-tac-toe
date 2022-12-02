@@ -3,13 +3,16 @@ import '../styles/Game.css';
 
 function Game(props) {
     const [player2, setPlayer2] = useState(null);
-    const [val, setVal] = useState(null);
+    const [val, setVal] = useState(["","","","","","","","",""]);
     const [turn, setTurn] = useState('X');
     const socket = props.socket;
 
     socket.on("receive-info", (user) => {
-        setPlayer2(user);   
-        socket.emit("send", props.user, props.room)     
+        if (!player2) {
+            setPlayer2(user);
+        } else {
+            socket.emit("send", props.user, props.room)  
+        }
     })
 
     socket.on("receive-table", (value) => {

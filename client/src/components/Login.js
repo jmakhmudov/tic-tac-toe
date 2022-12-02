@@ -1,10 +1,7 @@
 import React, {useState} from "react";
-import axios from "axios";
-import Cookies from "universal-cookie";
 import Game from "./Game";
 
 function Login(props) {
-    const cookies = new Cookies();
     const [user, setUser] = useState(null)
     const [room, setRoom] = useState(null)
     const [auth, setAuth] = useState(false)
