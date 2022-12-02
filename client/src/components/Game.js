@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import '../styles/Game.css';
-import {io} from "socket.io-client";
+import $ from "jquery";
 
 function Game(props) {
     const [player2, setPlayer2] = useState(null);
@@ -14,16 +14,29 @@ function Game(props) {
     })
 
     socket.on("receive-first", (user) => {
-        setPlayer2(user);  
+        setPlayer2(user); 
+        $(document).ready(function() {
+            for (let i=0;i<9;i++) {
+                document.getElementById(i).disabled = true;
+            }
+        })
+        
     })
 
-    socket.on("receive-table", (value) => {
-        setVal(value)  
-        console.log(value)
-        renderTable() 
+    socket.on("receive-table", (value, char) => {
+        setTurn(char);
+        setVal(value); 
+        for (let i=0;i<9;i++) {
+            if(value[i] === "") {
+                document.getElementById(i).disabled = false;
+            } else {
+                document.getElementById(i).disabled = true;
+            }
+        }
+        renderTable(value) 
     })
 
-    const renderTable = () => {
+    const renderTable = (val) => {
         for (let i=0;i<9;i++) {
             document.getElementById(i).innerText = val[i];
         }
@@ -41,8 +54,10 @@ function Game(props) {
         })
         document.getElementById(id).innerText = turn;
         setVal(a);
-        socket.emit("table", a, props.room, () => {
-
+        socket.emit("table", a, props.room, turn==='X'?'O':'X', () => {
+            for (let i=0;i<9;i++) {
+                document.getElementById(i).disabled = true;
+            }
         })
         setTurn(turn==='X'?'O':'X');
     }
@@ -52,15 +67,15 @@ function Game(props) {
         <div className="game-box">
             {player2 ? 
             <div className="table-box">
-                <button id="0" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
-                <button id="1" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
-                <button id="2" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
-                <button id="3"className="table-btn" onClick={(e) => {handleClick(e)}}></button>
-                <button id="4" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
-                <button id="5" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
-                <button id="6" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
-                <button id="7" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
-                <button id="8" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="0"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="1"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="2"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="3" className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="4"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="5"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="6"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="7"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
+                <button id="8"  className="table-btn" onClick={(e) => {handleClick(e)}}></button>
 
             </div> : 
             <h1>Waiting for the opponent</h1>

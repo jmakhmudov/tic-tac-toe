@@ -23,8 +23,8 @@ io.on("connection", socket => {
         socket.to(room).emit("receive-info", user)
         cb();
     })
-    socket.on("table", (val, room, cb) => {
-        socket.to(room).emit("receive-table", val);
+    socket.on("table", (val, room, char, cb) => {
+        socket.to(room).emit("receive-table", val, char);
         cb();
     })
 });
