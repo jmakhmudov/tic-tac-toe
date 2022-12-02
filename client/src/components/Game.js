@@ -14,6 +14,7 @@ function Game(props) {
     })
 
     socket.on("receive-first", (user) => {
+        setTurn('O');
         setPlayer2(user); 
         $(document).ready(function() {
             for (let i=0;i<9;i++) {
@@ -23,8 +24,7 @@ function Game(props) {
         
     })
 
-    socket.on("receive-table", (value, char) => {
-        setTurn(char);
+    socket.on("receive-table", (value) => {
         setVal(value); 
         for (let i=0;i<9;i++) {
             if(value[i] === "") {
@@ -54,7 +54,7 @@ function Game(props) {
         })
         document.getElementById(id).innerText = turn;
         setVal(a);
-        socket.emit("table", a, props.room, turn==='X'?'O':'X', () => {
+        socket.emit("table", a, props.room, () => {
             for (let i=0;i<9;i++) {
                 document.getElementById(i).disabled = true;
             }
